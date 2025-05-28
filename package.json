@@ -1,0 +1,19 @@
+{
+  "name": "heimdall",
+  "description": "The Open-Source React Native Over-The-Air (OTA) Server",
+  "author": {
+    "name": "Shindou Mihou",
+    "email": "hello@mihou.dev",
+    "url": "https://github.com/ShindouMihou"
+  },
+  "scripts": {
+    "dev": "bun run --hot src/index.ts"
+  },
+  "dependencies": {
+    "hono": "^4.7.10",
+    "zod": "^3.25.32"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  }
+}
