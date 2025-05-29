@@ -21,4 +21,4 @@ CREATE INDEX IF NOT EXISTS idx_bundles_disposed_created
 ON bundles (is_disposed, created_at DESC);
 `);
 
-console.debug("SQLITE 🏪: `bundles` table has been created.")
+console.debug("🏪 SQLITE: `bundles` table has been created.")

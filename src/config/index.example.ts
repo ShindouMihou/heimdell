@@ -1,6 +1,9 @@
 import {Config} from "./type";
 
 const config = {
+    // This defines where the SQLite database will be stored.
+    // We do not auto-create the folder, so please create the folder first
+    // before anything else.
     databasePath: ".db/heimdell.sqlite",
 
     // Storage Path defines where the files, such as bundles, will be stored.

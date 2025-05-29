@@ -1,9 +1,8 @@
 import {Hono} from "hono";
-import {AppContextEnv} from "../../../../types/hono";
 
-export const cliRoutes = new Hono<AppContextEnv>().basePath("/cli");
+export const updatesRoutes = new Hono().basePath("/updates");
 
 // Routes are available in the files below, please do not
 // remove this require import statement as it is necessary
 // to load the routes.
-require("./bundle");
+require("./updates");

@@ -107,7 +107,7 @@ export class Bundle {
      */
     static getById(id: string): Bundle | null {
         const stmt = db.query("SELECT * FROM bundles WHERE id = $id");
-        const result = stmt.get({ $id: id }) as BundleData | null;
+        const result = stmt.get({ id: id }) as BundleData | null;
         return result ? Bundle.from(result) : null;
     }
 
@@ -117,11 +117,12 @@ export class Bundle {
     static getByVersionTag(version: string, tag: string): Bundle | null {
         const stmt = db.query(`
             SELECT * FROM bundles
-            WHERE version = $version AND tag = $tag AND is_disposed = false
+            WHERE version = $version AND tag = $tag AND is_disposed = 0
             ORDER BY created_at DESC
             LIMIT 1
         `);
-        const result = stmt.get({ $version: version, $tag: tag }) as BundleData | null;
+        console.debug("Querying for bundle by version and tag:", { version, tag });
+        const result = stmt.get({ version: version, tag: tag }) as BundleData | null;
         return result ? Bundle.from(result) : null;
     }
 
@@ -145,15 +146,15 @@ export class Bundle {
         }
         if (options?.author) {
             conditions.push("author = $author");
-            params.$author = options.author;
+            params.author = options.author;
         }
         if (options?.version) {
             conditions.push("version = $version");
-            params.$version = options.version;
+            params.version = options.version;
         }
         if (options?.tag) {
             conditions.push("tag = $tag");
-            params.$tag = options.tag;
+            params.tag = options.tag;
         }
 
         if (conditions.length > 0) {
@@ -164,13 +165,14 @@ export class Bundle {
 
         if (options?.limit !== undefined) {
             query += " LIMIT $limit";
-            params.$limit = options.limit;
+            params.limit = options.limit;
         }
         if (options?.offset !== undefined) {
             query += " OFFSET $offset";
-            params.$offset = options.offset;
+            params.offset = options.offset;
         }
 
+        console.debug(query, params)
         const stmt = db.query(query);
         const results = stmt.all(params) as BundleData[];
         return results.map(Bundle.from);
@@ -190,13 +192,13 @@ export class Bundle {
             VALUES ($id, $version, $tag, $note, $author, $is_disposed, $created_at)
         `);
         stmt.run({
-            $id: this.id,
-            $version: this.version,
-            $tag: this.tag,
-            $note: this.note,
-            $author: this.author,
-            $is_disposed: this.is_disposed ? 1 : 0, // SQLite expects 0 or 1 for boolean
-            $created_at: this.created_at.toISOString(),
+            id: this.id,
+            version: this.version,
+            tag: this.tag,
+            note: this.note,
+            author: this.author,
+            is_disposed: this.is_disposed ? 1 : 0, // SQLite expects 0 or 1 for boolean
+            created_at: this.created_at.toISOString(),
         });
     }
 
@@ -210,7 +212,7 @@ export class Bundle {
 
         if (data.note !== undefined) {
             fieldsToUpdate.push("note = $note");
-            params.$note = data.note;
+            params.note = data.note;
             this.note = data.note; // Update instance property
         }
         // Add other updatable fields here, e.g.:
@@ -243,7 +245,7 @@ export class Bundle {
             return;
         }
         const stmt = db.query("UPDATE bundles SET is_disposed = 1 WHERE id = $id");
-        stmt.run({ $id: this.id });
+        stmt.run({ id: this.id });
         this.is_disposed = true;
     }
 
@@ -256,7 +258,7 @@ export class Bundle {
             return;
         }
         const stmt = db.query("UPDATE bundles SET is_disposed = 0 WHERE id = $id"); // Use 0 for false
-        stmt.run({ $id: this.id });
+        stmt.run({ id: this.id });
         this.is_disposed = false; // Update instance property
     }
 }

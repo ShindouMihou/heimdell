@@ -1,7 +1,7 @@
 import {validator} from "hono/validator";
 import {ZodSchema} from "zod";
 import {respondInvalidRequest} from "./response";
-import {basicAuth} from "hono/dist/types/middleware/basic-auth";
+import {basicAuth} from "hono/basic-auth";
 import config from "../config";
 
 export function validate(schema: ZodSchema) {
