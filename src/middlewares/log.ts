@@ -1,11 +1,12 @@
 import { MiddlewareHandler } from 'hono';
+import {getConnInfo} from "hono/bun";
 
 export const requestLogger: MiddlewareHandler = async (c, next) => {
     const start = Date.now();
 
     const cfConnectingIp = c.req.header('cf-connecting-ip');
     const xForwardedFor = c.req.header('x-forwarded-for');
-    const remoteIp = cfConnectingIp || xForwardedFor || c.req.header('remote-addr') || 'Unknown IP';
+    const remoteIp = cfConnectingIp || xForwardedFor || c.req.header('remote-addr') || getConnInfo(c).remote.address || 'Unknown IP';
 
     const userAgent = c.req.header('user-agent') || 'Unknown User-Agent';
     const referer = c.req.header('referer') || 'No Referer';
