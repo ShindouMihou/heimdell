@@ -9,7 +9,9 @@ updatesRoutes.get(
     async (context) => {
         const platform = context.req.param("platform");
         const version = context.req.param("version");
-        const tag = context.req.query("tag")
+        const tag = context.req.query("tag");
+
+        const currentBundleVersion = context.req.query("current_bundle");
 
         if (!["android", "ios"].includes(platform)) {
             return respondError(context, 400, "Invalid platform specified.");
@@ -26,6 +28,10 @@ updatesRoutes.get(
         const bundle = Bundle.getByVersionTag(version, tag);
         if (!bundle) {
             return respondError(context, 404, "No updates found for this version and platform.");
+        }
+
+        if (bundle.id === currentBundleVersion) {
+            return respondError(context, 404, "You are already at the latest version.");
         }
 
         const folderPath = path.join(config.storagePath, "bundles", bundle.tag, bundle.version, bundle.id);
