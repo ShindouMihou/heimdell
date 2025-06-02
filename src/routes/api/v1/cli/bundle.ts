@@ -34,6 +34,28 @@ cliRoutes.get(
             const bundles = Bundle.getAll({ tag: tag });
             return context.json(bundles);
     }
+);
+
+cliRoutes.post(
+    "/bundles/:tag/rollback",
+    useBasicAuth,
+    (context) => {
+        const tag = context.req.param("tag");
+        if (!config.tags.includes(tag)) {
+            return respondError(context, 400, "Invalid tag specified.");
+        }
+        const bundles = Bundle.getAll({ tag: tag, includeDisposed: false });
+        if (bundles.length === 0) {
+            return respondError(context, 404, "No bundles found for the specified tag.");
+        }
+
+        // Sort bundles by created_at in newest first
+        bundles.sort((a, b) => b.created_at.getTime() - a.created_at.getTime());
+        const latestBundle = bundles[0];
+
+        latestBundle.dispose();
+        return context.json({ message: "OK", disposed_bundle: latestBundle });
+    }
 )
 
 cliRoutes.delete(
