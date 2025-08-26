@@ -1,0 +1,29 @@
+# Keep the image tiny by excluding local/dev files
+.git/
+.github/
+.gitignore
+Dockerfile
+docker-compose.yml
+README.md
+*.md
+
+# Dependencies and builds from host
+node_modules/
+dist/
+coverage/
+
+# Runtime and editor junk
+storage/
+logs/
+tmp/
+*.log
+.DS_Store
+.vscode/
+.idea/
+.data/
+.db/
+
+# Env files
+.env
+.env.*
+

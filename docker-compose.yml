@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  heimdall:
+    build: .
+    ports:
+      - "8778:8778"
+    volumes:
+      - heimdall_db:/usr/src/app/.db
+      - heimdall_data:/usr/src/app/.data
+    environment:
+      - NODE_ENV=production
+      - BUN_ENV=production
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8778/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    # Performance optimizations for static file serving
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    # Resource limits for production
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+
+volumes:
+  heimdall_db:
+  heimdall_data:
