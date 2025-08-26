@@ -22,7 +22,7 @@ tmp/
 .idea/
 .data/
 .db/
-.docker-compose.yml
+docker-compose.yml
 
 # Env files
 .env
