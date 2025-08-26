@@ -65,6 +65,11 @@ app.use(
         }
     })
 );
+
+app.get("/health", (c) => {
+    return c.json({ status: "ok" });
+});
+
 app.route("", apiV1);
 
 console.debug("🔰 Heimdell: Running on port 8778");

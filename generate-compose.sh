@@ -12,7 +12,7 @@ COMMON_PROPERTIES='x-heimdall-common: &heimdall-common-properties
   build: .
   restart: unless-stopped
   healthcheck:
-    test: ["CMD", "curl", "-f", "http://localhost:8778/"]
+    test: ["CMD", "curl", "-f", "http://localhost:8778/health"]
     interval: 30s
     timeout: 10s
     retries: 3
