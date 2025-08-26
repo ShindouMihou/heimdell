@@ -49,6 +49,26 @@ Edit the file and adjust the configuration as needed for your environment.
 bun run src/index.ts
 ```
 
+### 4. Docker Setup (Optional)
+
+You can create a Docker image for easier deployment:
+
+```bash
+docker build -t heimdell .
+```
+
+Furthermore, you can use Docker Compose to run either staging, production, or even both environments simultaneously.
+
+```bash
+chmod +x generate-compose.sh && ./generate-compose.sh <staging|production|all>
+```
+
+You can then start the services with:
+
+```bash
+docker compose -up -d
+```
+
 To create and push bundles to the Heimdell server, use the companion CLI tool:
 
 👉 [heimdell-cli](https://github.com/ShindouMihou/heimdell-cli)

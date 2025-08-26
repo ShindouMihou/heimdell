@@ -2,3 +2,4 @@ node_modules/
 src/config/index.ts
 .db/
 .data/
+.docker-compose.yml
