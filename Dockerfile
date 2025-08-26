@@ -1,6 +1,11 @@
 # use the official Bun image
 # see all versions at https://hub.docker.com/r/oven/bun/tags
 FROM oven/bun:1 AS base
+
+# Install curl for healthchecks
+# This needs to be done as root before changing user
+RUN apt-get update && apt-get install -y curl --no-install-recommends && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /usr/src/app
 
 # install dependencies into temp directory
