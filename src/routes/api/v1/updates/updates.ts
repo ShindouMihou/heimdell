@@ -60,6 +60,7 @@ updatesRoutes.get(
                 download: platform === "ios" ?
                     "bundles/" + bundle.tag + "/" + bundle.version + "/" + bundle.id + "/main.jsbundle.zip" :
                     "bundles/" + bundle.tag + "/" + bundle.version + "/" + bundle.id + "/index.android.bundle.zip",
+                bundleId: bundle.id,
             }
         });
     }
