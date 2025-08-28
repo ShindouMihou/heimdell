@@ -2,6 +2,11 @@ import { MiddlewareHandler } from 'hono';
 import {getConnInfo} from "hono/bun";
 
 export const requestLogger: MiddlewareHandler = async (c, next) => {
+    if (c.req.path === '/health') {
+        await next();
+        return;
+    }
+
     const start = Date.now();
 
     const cfConnectingIp = c.req.header('cf-connecting-ip');
