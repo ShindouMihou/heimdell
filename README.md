@@ -109,6 +109,19 @@ type _ = {
 
 These hooks are optional and can be implemented as needed. They provide a way to extend the functionality of Heimdell and integrate it with other systems.
 
+We do have a minimal Slack webhook implementation available to use. You can enable it by using:
+
+```ts
+import {createSlackChannel, useDefaultSlackChannelHooks} from "./slack";
+
+const config = {
+    // your config here.
+    
+    // We generally recommend using process.env.SLACK_CHANNEL_WEBHOOK instead of hardcoding the webhook URL.
+    ...useDefaultSlackChannelHooks(createSlackChannel("https://hooks.slack.com/services/XXX/YYY/ZZZ"))
+} as Config;
+```
+
 ## 📚 Resources
 
 * [`react-native-ota-hot-update`](https://github.com/vantuan88291/react-native-ota-hot-update) – OTA runtime update handler
