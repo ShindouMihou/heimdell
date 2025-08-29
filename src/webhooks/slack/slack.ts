@@ -117,7 +117,7 @@ export const useDefaultSlackChannelHooks = (channel: ReturnType<typeof createSla
             ["Bundle ID", bundle.id],
             ["Version", bundle.version.toString()],
             ["Tag", normalizeTag(bundle.tag)],
-            ["Author", bundle.author || "Unknown"],
+            ["Author", normalizeTag(bundle.author || "Unknown")],
             ["Created At", new Date(bundle.created_at).toLocaleString()],
             ["Notes", bundle.note || "N/A"],
         ];
@@ -128,7 +128,7 @@ export const useDefaultSlackChannelHooks = (channel: ReturnType<typeof createSla
             return builder
                 .mrkdwn(
                     ":warning: *New Bundle Pushed*\n" +
-                    `*${bundle.author}* has pushed a new bundle to the *${normalizeTag(bundle.tag)}* tag in the *${environment}* environment.`
+                    `*${normalizeTag(bundle.author)}* has pushed a new bundle to the *${normalizeTag(bundle.tag)}* tag in the *${environment}* environment.`
                 )
                 .divider()
                 .table(bundleToTable(bundle))
@@ -137,7 +137,7 @@ export const useDefaultSlackChannelHooks = (channel: ReturnType<typeof createSla
             return builder
                 .mrkdwn(
                     ":information_source: *Bundle Reserved*\n" +
-                    `*${bundle.author}* has reserved a new bundle for the *${normalizeTag(bundle.tag)}* tag in the *${environment}* environment.`
+                    `*${normalizeTag(bundle.author)}* has reserved a new bundle for the *${normalizeTag(bundle.tag)}* tag in the *${environment}* environment.`
                 )
                 .divider()
                 .table(bundleToTable(bundle))
@@ -147,7 +147,7 @@ export const useDefaultSlackChannelHooks = (channel: ReturnType<typeof createSla
                 return builder
                     .mrkdwn(
                         ":wastebasket: *Bundle Disposed*\n" +
-                        `*${bundle.author}* has disposed a bundle for the *${normalizeTag(bundle.tag)}* tag in the *${environment}* environment.`
+                        `*${normalizeTag(bundle.author)}* has disposed a bundle for the *${normalizeTag(bundle.tag)}* tag in the *${environment}* environment.`
                     )
                     .divider()
                     .table(bundleToTable(bundle))
@@ -158,7 +158,7 @@ export const useDefaultSlackChannelHooks = (channel: ReturnType<typeof createSla
                 return builder
                     .mrkdwn(
                         ":leftwards_arrow_with_hook: *Bundle Rolled Back*\n" +
-                        `*${bundle.author}* has rolled back to a bundle for the *${normalizeTag(bundle.tag)}* tag in the *${environment}* environment.`
+                        `*${normalizeTag(bundle.author)}* has rolled back to a bundle for the *${normalizeTag(bundle.tag)}* tag in the *${environment}* environment.`
                     )
                     .divider()
                     .table(bundleToTable(bundle))
