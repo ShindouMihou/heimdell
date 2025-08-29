@@ -38,7 +38,8 @@ PROD_SERVICE='  heimdall-prod:
       - heimdall_data_prod:/usr/src/app/.data
     environment:
       - NODE_ENV=production
-      - BUN_ENV=production'
+      - BUN_ENV=production
+      - HEIMDELL_ENVIRONMENT_NAME=production'
 
 # Staging service definition
 STAGING_SERVICE='  heimdall-staging:
@@ -50,7 +51,8 @@ STAGING_SERVICE='  heimdall-staging:
       - heimdall_data_staging:/usr/src/app/.data
     environment:
       - NODE_ENV=staging
-      - BUN_ENV=staging'
+      - BUN_ENV=staging
+      - HEIMDELL_ENVIRONMENT_NAME=staging'
 
 # Production volumes
 PROD_VOLUMES='  heimdall_db_prod:

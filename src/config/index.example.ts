@@ -1,6 +1,11 @@
 import {Config} from "./type";
+import {Bundle} from "../models/bundle";
 
 const config = {
+    // This defines the environment name that will be used
+    // for logging and other purposes.
+    environmentName: process.env.HEIMDELL_ENVIRONMENT_NAME || "development",
+
     // This defines where the SQLite database will be stored.
     // We do not auto-create the folder, so please create the folder first
     // before anything else.
@@ -21,6 +26,26 @@ const config = {
     // your applications here and be able to create a bundle release for
     // it based on the tag.
     // Example: heimdell-client, heimdell-admin
-    tags: [""]
+    tags: [""],
+
+    // onBundlePush is a hook that will be called when a new bundle is pushed
+    // to the server. You can use this to perform actions such as sending
+    // notifications or triggering other processes.
+    onBundlePush: async (bundle: Bundle, environment: string) => {},
+
+    // onBundleRollback is a hook that will be called when a bundle is rolled back
+    // to the server. You can use this to perform actions such as sending
+    // notifications or triggering other processes.
+    onBundleRollback: async (bundle: Bundle, environment: string) => {},
+
+    // onBundleDispose is a hook that will be called when a bundle is disposed
+    // to the server. You can use this to perform actions such as sending
+    // notifications or triggering other processes.
+    onBundleDispose: async (bundle: Bundle, environment: string) => {},
+
+    // onBundleReserve is a hook that will be called when a bundle is reserved
+    // to the server. You can use this to perform actions such as sending
+    // notifications or triggering other processes.
+    onBundleReserve: async (bundle: Bundle, environment: string) => {}
 } as Config;
 export default config;

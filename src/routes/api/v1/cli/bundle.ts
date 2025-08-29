@@ -6,6 +6,7 @@ import config from "../../../../config";
 import * as path from "node:path";
 import {requiresBundle} from "../../../../middlewares/bundle";
 import {uploadBundleFile} from "../../../../helpers/bundle/uploadBundleFile";
+import {onBundleDispose, onBundlePush, onBundleReserve, onBundleRollback} from "../../../../hooks/bundleConfigHooks";
 
 cliRoutes.post(
     "/bundle/reserve",
@@ -19,6 +20,7 @@ cliRoutes.post(
         const bundle = Bundle.create({ version, note, tag, author: context.get("user") });
         bundle.save();
 
+        onBundleReserve(bundle).then();
         return context.json(bundle)
     }
 );
@@ -54,6 +56,7 @@ cliRoutes.post(
         const latestBundle = bundles[0];
 
         latestBundle.dispose();
+        onBundleRollback(latestBundle).then();
         return context.json({ message: "OK", disposed_bundle: latestBundle });
     }
 )
@@ -66,6 +69,7 @@ cliRoutes.delete(
         const bundle = context.get("bundle")!;
         bundle.dispose();
 
+        onBundleDispose(bundle).then();
         return context.json({ message: "Bundle has been disposed." })
     }
 );
@@ -91,6 +95,7 @@ cliRoutes.post(
         errorResponse = await uploadBundleFile(context, ios, folderPath, "main.jsbundle.zip", "iOS");
         if (errorResponse) return errorResponse;
 
+        onBundlePush(bundle).then();
         return context.json({ message: "Bundle has been uploaded." })
     }
 );

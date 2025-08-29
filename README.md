@@ -79,6 +79,36 @@ This includes functionality for:
 * Uploading updates
 * Managing release metadata
 
+## 🔗 Webhooks / Audit Logs
+
+To make Heimdell send webhooks, or audit logs, to your desired endpoint, or even the way you like, such as file logging, 
+you can modify the hooks on the `src/config` file with the following hooks available:
+```ts
+type _ = {
+    // onBundlePush is a hook that will be called when a new bundle is pushed
+    // to the server. You can use this to perform actions such as sending
+    // notifications or triggering other processes.
+    onBundlePush?: (bundle: Bundle, environment: string) => Promise<void>,
+
+    // onBundleRollback is a hook that will be called when a bundle is rolled back
+    // to the server. You can use this to perform actions such as sending
+    // notifications or triggering other processes.
+    onBundleRollback?: (bundle: Bundle, environment: string) => Promise<void>,
+
+    // onBundleDispose is a hook that will be called when a bundle is disposed
+    // to the server. You can use this to perform actions such as sending
+    // notifications or triggering other processes.
+    onBundleDispose?: (bundle: Bundle, environment: string) => Promise<void>,
+
+    // onBundleReserve is a hook that will be called when a bundle is reserved
+    // to the server. You can use this to perform actions such as sending
+    // notifications or triggering other processes.
+    onBundleReserve?: (bundle: Bundle, environment: string) => Promise<void>
+}
+```
+
+These hooks are optional and can be implemented as needed. They provide a way to extend the functionality of Heimdell and integrate it with other systems.
+
 ## 📚 Resources
 
 * [`react-native-ota-hot-update`](https://github.com/vantuan88291/react-native-ota-hot-update) – OTA runtime update handler
