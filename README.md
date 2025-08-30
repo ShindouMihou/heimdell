@@ -15,7 +15,7 @@ Whenever your app checks for updates, Heimdell provides the necessary metadata a
 
 > Heimdell is currently **under development**.
 
-The backend server functions as intended, but several issues remain—most notably (**aplies to Windows only**):
+The backend server functions as intended, but several issues remain—most notably (**applies to Windows only**):
 
 * Image and asset references are not yet resolved in the current bundling flow.
 * CLI support for apps using the **new React Native architecture** is still incomplete.
