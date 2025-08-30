@@ -15,10 +15,10 @@ export function validate(schema: ZodSchema) {
 }
 
 export const useBasicAuth = basicAuth({
-    verifyUser: (username, password, context) => {
+    verifyUser: async (username, password, context) => {
         const pwd = config.users[username];
         if (!pwd) return false;
-        const isValid = pwd === password;
+        const isValid = typeof pwd === "string" ? pwd === password : await pwd.verify(password);
         if (isValid) {
             context.set("user", username);
             return true;

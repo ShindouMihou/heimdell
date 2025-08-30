@@ -1,5 +1,6 @@
 import {Config} from "./type";
 import {Bundle} from "../models/bundle";
+import {hashed} from "./ext/hashed";
 
 const config = {
     // This defines the environment name that will be used
@@ -18,8 +19,18 @@ const config = {
 
     // Each user will be able to communicate with Heimdell through the
     // CLI to deploy and send updates to the server.
-    // Define your users here in the format: username: password
-    users: {},
+    //
+    // Make sure to generate a hash of the password using the CLI (`heimdell hash <password>`).
+    // Define your users here in the format: username: hashed("argon2id hash").
+    //
+    // We use Argon2id (default for Bun.password) for hashing passwords. It's also the most
+    // secure option available in Bun and in the industry right now.
+    //
+    // You may also define passwords insecurely by using a string value, but we
+    // do not recommend it for security purposes.
+    users: {
+        example: hashed("$argon2id$v=19$m=65536,t=3,p=4$Z3Vlc3Q$u1k7mXr0bYpIhX6n0qv1fQ")
+    },
 
     // Tags define the different applications that Heimdell will serve,
     // as Heimdell is designed to be a multi-application host, you can tag

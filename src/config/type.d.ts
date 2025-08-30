@@ -1,4 +1,5 @@
 import {Bundle} from "../models/bundle";
+import {Hashed} from "./ext/hashed";
 
 export type Config = {
     // This defines the environment name that will be used
@@ -19,7 +20,7 @@ export type Config = {
     // CLI to deploy and send updates to the server.
     // Define your users here in the format: username: password
     users: {
-        [username: string]: string
+        [username: string]: string | Hashed
     },
 
     // Tags define the different applications that Heimdell will serve,
