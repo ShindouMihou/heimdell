@@ -14,3 +14,4 @@ export const db = new Database(config.databasePath, {
 })
 
 require("./tables/bundle");
+require("./tables/bundleEvents");

@@ -1,8 +1,10 @@
 import {updatesRoutes} from "./index";
 import {respondError} from "../../../../middlewares/response";
 import {Bundle} from "../../../../models/bundle";
-import * as path from "node:path";
 import config from "../../../../config";
+import {safeBundlePath} from "../../../../utils/pathSafety";
+import {extractDeviceInfo} from "../../../../analytics/extractDeviceInfo";
+import {BundleEvent} from "../../../../models/bundleEvent";
 
 updatesRoutes.get(
     "/:platform/:version",
@@ -34,15 +36,10 @@ updatesRoutes.get(
             return respondError(context, 404, "You are already at the latest version.");
         }
 
-        const folderPath = path.join(config.storagePath, "bundles", bundle.tag, bundle.version, bundle.id);
+        const folderPath = safeBundlePath(config.storagePath, bundle.tag, bundle.version, bundle.id);
 
-        const android = Bun.file(
-            path.join(folderPath, "index.android.bundle.zip")
-        );
-
-        const ios = Bun.file(
-            path.join(folderPath, "main.jsbundle.zip")
-        );
+        const android = Bun.file(folderPath + "/index.android.bundle.zip");
+        const ios = Bun.file(folderPath + "/main.jsbundle.zip");
 
         const doesAndroidHaveBundle = await android.exists();
         const doesIosHaveBundle = await ios.exists();
@@ -53,6 +50,13 @@ updatesRoutes.get(
 
         if (platform === "ios" && !doesIosHaveBundle) {
             return respondError(context, 404, "iOS bundle not found.");
+        }
+
+        try {
+            const deviceInfo = extractDeviceInfo(context);
+            BundleEvent.record(bundle.id, "update_check", platform as "android" | "ios", deviceInfo);
+        } catch (e) {
+            console.debug("🔰 Heimdell: Failed to record analytics event:", e);
         }
 
         return context.json({

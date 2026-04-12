@@ -30,6 +30,29 @@ export type Config = {
     // Example: heimdell-client, heimdell-admin
     tags: string[],
 
+    // Analytics dashboard configuration.
+    // If not set, analytics viewing is completely disabled.
+    // The route requires Basic Auth to access.
+    // If `users` is provided, it is used exclusively for the analytics route
+    // (separate credentials from the main CLI users). If omitted, the main
+    // `users` map is used instead.
+    analytics?: {
+        route: string,
+        users?: {
+            [username: string]: string | Hashed
+        },
+    },
+
+    // Controls automatic cleanup of inactive bundles.
+    // Bundles with no activity for the specified number of days
+    // will be disposed and have their files removed from disk.
+    // Minimum inactivityDays is 14.
+    autoDelete?: {
+        enabled: boolean,
+        inactivityDays: number,
+        intervalMinutes?: number,
+    },
+
     // onBundlePush is a hook that will be called when a new bundle is pushed
     // to the server. You can use this to perform actions such as sending
     // notifications or triggering other processes.

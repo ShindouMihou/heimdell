@@ -21,9 +21,17 @@ export interface CreateBundleParams {
     author: string;
 }
 
+import {isUnsafeSegment} from "../utils/pathSafety";
+
+const safePathString = (minLen: number, maxLen: number, fieldName: string) =>
+    z.string()
+        .min(minLen, `${fieldName} is required`)
+        .max(maxLen, `${fieldName} must be at most ${maxLen} characters long`)
+        .refine(val => !isUnsafeSegment(val), { message: "Must contain only alphanumeric characters, dots, hyphens, and underscores" });
+
 export const CreateBundleParamsSchema = z.object({
-    version: z.string().min(1, "Version is required").max(20, "Version must be at most 20 characters long"),
-    tag: z.string().min(1, "Tag is required").max(256, "Tag must be at most 256 characters long"),
+    version: safePathString(1, 20, "Version"),
+    tag: safePathString(1, 256, "Tag"),
     note: z.string().max(512, "Note must be at most 512 characters long").optional(),
 })
 

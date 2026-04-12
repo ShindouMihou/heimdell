@@ -39,6 +39,28 @@ const config = {
     // Example: heimdell-client, heimdell-admin
     tags: [""],
 
+    // analytics configures the analytics dashboard.
+    // If not set, analytics viewing is completely disabled.
+    // The route requires Basic Auth to access.
+    // If `users` is omitted, the main `users` map above is used.
+    // If provided, only these credentials can access the analytics route.
+    analytics: {
+         route: "/analytics",
+         users: {
+             analytics_viewer: hashed("$argon2id$v=19$m=65536,t=3,p=4$Z3Vlc3Q$u1k7mXr0bYpIhX6n0qv1fQ"),
+         },
+    },
+
+    // autoDelete controls automatic cleanup of inactive bundles.
+    // Bundles with no activity for the specified number of days
+    // will be disposed and have their files removed from disk.
+    // Minimum inactivityDays is 14.
+    autoDelete: {
+         enabled: false,
+         inactivityDays: 30,
+         intervalMinutes: 60,
+    },
+
     // onBundlePush is a hook that will be called when a new bundle is pushed
     // to the server. You can use this to perform actions such as sending
     // notifications or triggering other processes.

@@ -72,6 +72,18 @@ app.get("/health", (c) => {
 
 app.route("", apiV1);
 
+if (config.analytics?.route) {
+    const {createAnalyticsRoute} = require("./routes/analytics");
+    app.route("", createAnalyticsRoute(config.analytics.route, config.analytics.users));
+    const userSource = config.analytics.users ? "dedicated analytics users" : "main users";
+    console.debug(`🔰 Heimdell: Analytics dashboard available at ${config.analytics.route} (auth: ${userSource})`);
+}
+
+if (config.autoDelete?.enabled) {
+    const {startCleanupScheduler} = require("./tasks/cleanupInactiveBundles");
+    startCleanupScheduler();
+}
+
 console.debug("🔰 Heimdell: Running on port 8778");
 export default {
     port: 8778,

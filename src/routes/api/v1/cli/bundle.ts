@@ -3,7 +3,7 @@ import {useBasicAuth, validate} from "../../../../middlewares/validate";
 import {Bundle, CreateBundleParams, CreateBundleParamsSchema} from "../../../../models/bundle";
 import {respondError} from "../../../../middlewares/response";
 import config from "../../../../config";
-import * as path from "node:path";
+import {safeBundlePath} from "../../../../utils/pathSafety";
 import {requiresBundle} from "../../../../middlewares/bundle";
 import {uploadBundleFile} from "../../../../helpers/bundle/uploadBundleFile";
 import {onBundleDispose, onBundlePush, onBundleReserve, onBundleRollback} from "../../../../hooks/bundleConfigHooks";
@@ -88,7 +88,7 @@ cliRoutes.post(
             return respondError(context, 400, "No bundle file provided for any of: ios, android");
         }
 
-        const folderPath = path.join(config.storagePath, "bundles", bundle.tag, bundle.version, bundle.id)
+        const folderPath = safeBundlePath(config.storagePath, bundle.tag, bundle.version, bundle.id);
         let errorResponse;
         errorResponse = await uploadBundleFile(context, android, folderPath, "index.android.bundle.zip", "Android");
         if (errorResponse) return errorResponse;
