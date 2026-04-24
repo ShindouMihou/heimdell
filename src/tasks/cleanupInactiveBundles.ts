@@ -104,7 +104,7 @@ async function cleanupInactiveBundles(): Promise<void> {
 
         const candidates = candidatesStmt.all({ cutoff: cutoff.toISOString() }) as {
             id: string; version: string; tag: string; note: string;
-            author: string; is_disposed: number; created_at: string;
+            author: string; is_disposed: number; is_force_upgrade: number; created_at: string;
         }[];
 
         let disposed = 0;
@@ -122,7 +122,9 @@ async function cleanupInactiveBundles(): Promise<void> {
             const bundle = Bundle.from({
                 id: row.id, version: row.version, tag: row.tag,
                 note: row.note, author: row.author,
-                is_disposed: true, created_at: row.created_at,
+                is_disposed: true,
+                is_force_upgrade: Boolean(row.is_force_upgrade),
+                created_at: row.created_at,
             });
 
             await deleteFilesFromDisk(bundle);

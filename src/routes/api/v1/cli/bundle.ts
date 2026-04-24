@@ -1,23 +1,41 @@
 import {cliRoutes} from "./index";
 import {useBasicAuth, validate} from "../../../../middlewares/validate";
-import {Bundle, CreateBundleParams, CreateBundleParamsSchema} from "../../../../models/bundle";
+import {
+    Bundle,
+    CreateBundleParams,
+    CreateBundleParamsSchema,
+    SetForceUpgradeParams,
+    SetForceUpgradeParamsSchema,
+} from "../../../../models/bundle";
 import {respondError} from "../../../../middlewares/response";
 import config from "../../../../config";
 import {safeBundlePath} from "../../../../utils/pathSafety";
 import {requiresBundle} from "../../../../middlewares/bundle";
 import {uploadBundleFile} from "../../../../helpers/bundle/uploadBundleFile";
-import {onBundleDispose, onBundlePush, onBundleReserve, onBundleRollback} from "../../../../hooks/bundleConfigHooks";
+import {
+    onBundleDispose,
+    onBundleForceUpgrade,
+    onBundlePush,
+    onBundleReserve,
+    onBundleRollback,
+} from "../../../../hooks/bundleConfigHooks";
 
 cliRoutes.post(
     "/bundle/reserve",
     useBasicAuth,
     validate(CreateBundleParamsSchema),
     (context) => {
-        const { version, note, tag }: CreateBundleParams = context.req.valid('json');
+        const { version, note, tag, is_force_upgrade }: CreateBundleParams = context.req.valid('json');
         if (!config.tags.includes(tag)) {
             return respondError(context, 400, "Invalid tag specified.");
         }
-        const bundle = Bundle.create({ version, note, tag, author: context.get("user") });
+        const bundle = Bundle.create({
+            version,
+            note,
+            tag,
+            author: context.get("user"),
+            is_force_upgrade,
+        });
         bundle.save();
 
         onBundleReserve(bundle).then();
@@ -75,6 +93,35 @@ cliRoutes.delete(
 );
 
 cliRoutes.post(
+    "/bundle/:id/force-upgrade",
+    useBasicAuth,
+    requiresBundle,
+    validate(SetForceUpgradeParamsSchema),
+    (context) => {
+        const bundle = context.get("bundle")!;
+        const { enabled }: SetForceUpgradeParams = context.req.valid('json');
+
+        const wasEnabled = bundle.is_force_upgrade;
+        if (enabled) {
+            bundle.markForceUpgrade();
+        } else {
+            bundle.clearForceUpgrade();
+        }
+
+        if (enabled && !wasEnabled) {
+            onBundleForceUpgrade(bundle).then();
+        }
+
+        return context.json({
+            message: enabled
+                ? "Bundle has been marked as a force-upgrade."
+                : "Bundle is no longer marked as a force-upgrade.",
+            bundle,
+        });
+    }
+);
+
+cliRoutes.post(
     "/bundle/:id/upload",
     useBasicAuth,
     requiresBundle,
@@ -96,6 +143,9 @@ cliRoutes.post(
         if (errorResponse) return errorResponse;
 
         onBundlePush(bundle).then();
+        if (bundle.is_force_upgrade) {
+            onBundleForceUpgrade(bundle).then();
+        }
         return context.json({ message: "Bundle has been uploaded." })
     }
 );

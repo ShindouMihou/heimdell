@@ -71,5 +71,17 @@ export type Config = {
     // onBundleReserve is a hook that will be called when a bundle is reserved
     // to the server. You can use this to perform actions such as sending
     // notifications or triggering other processes.
-    onBundleReserve?: (bundle: Bundle, environment: string) => Promise<void>
+    onBundleReserve?: (bundle: Bundle, environment: string) => Promise<void>,
+
+    // onBundleForceUpgrade is a hook that will be called when a bundle becomes
+    // a force-upgrade AND its artifact is available for download. Concretely:
+    //   - On push with --force-upgrade: fires after the bundle files have been
+    //     successfully uploaded (not at reserve time), so subscribers can rely
+    //     on the bundle being downloadable.
+    //   - On retroactive set-force-upgrade: fires immediately on transition
+    //     from cleared to enabled.
+    // It is NOT invoked when the flag is cleared, nor when a bundle that is
+    // already flagged is toggled on again. Use this to notify stakeholders
+    // that a mandatory update has been published.
+    onBundleForceUpgrade?: (bundle: Bundle, environment: string) => Promise<void>
 }

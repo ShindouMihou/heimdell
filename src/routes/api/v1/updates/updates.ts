@@ -59,12 +59,21 @@ updatesRoutes.get(
             console.debug("🔰 Heimdell: Failed to record analytics event:", e);
         }
 
+        const forceUpgrade = bundle.is_force_upgrade
+            || Bundle.hasForceUpgradeAfter(
+                version,
+                tag,
+                currentBundleVersion ?? undefined,
+                bundle.created_at,
+            );
+
         return context.json({
             update: {
                 download: platform === "ios" ?
                     "bundles/" + bundle.tag + "/" + bundle.version + "/" + bundle.id + "/main.jsbundle.zip" :
                     "bundles/" + bundle.tag + "/" + bundle.version + "/" + bundle.id + "/index.android.bundle.zip",
                 bundleId: bundle.id,
+                forceUpgrade,
             }
         });
     }

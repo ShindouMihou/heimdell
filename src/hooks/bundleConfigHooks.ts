@@ -22,3 +22,4 @@ export const onBundlePush = onBundleHook(config.onBundlePush, "onBundlePush");
 export const onBundleRollback = onBundleHook(config.onBundleRollback, "onBundleRollback");
 export const onBundleDispose = onBundleHook(config.onBundleDispose, "onBundleDispose");
 export const onBundleReserve = onBundleHook(config.onBundleReserve, "onBundleReserve");
+export const onBundleForceUpgrade = onBundleHook(config.onBundleForceUpgrade, "onBundleForceUpgrade");
